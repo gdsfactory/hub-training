@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.12"
+# requires-python = "~=3.12"
 # dependencies = [
 #     "numpy",
 #     "matplotlib",
@@ -16,7 +16,6 @@ from typing import Any
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import numpy as np
-from gfhub import tags
 
 
 def main(
@@ -50,7 +49,8 @@ def main(
         analyses[(x, y)] = {"value": value, "failed": np.isnan(value)}
 
     if not analyses:
-        raise ValueError("No die analyses found with valid coordinates")
+        msg = "No die analyses found with valid coordinates"
+        raise ValueError(msg)
 
     # Build wafer grid
     die_xys = np.array(sorted(analyses.keys()))
@@ -90,17 +90,32 @@ def main(
 
     # Create wafer map visualization
     fig = plt.figure(figsize=(10, 4.5))
-    gs = fig.add_gridspec(2, 2, width_ratios=[1, 1], height_ratios=[0.9, 0.1], wspace=0.3)
+    gs = fig.add_gridspec(
+        2, 2, width_ratios=[1, 1], height_ratios=[0.9, 0.1], wspace=0.3
+    )
 
     ax0 = fig.add_subplot(gs[0, 0])
     ax1 = fig.add_subplot(gs[0, 1])
 
     # Pass-fail wafermap
-    ax0.pcolor(X, Y, np.ma.masked_less(~exists, 1), hatch="//", edgecolor="C7", facecolor="none", linewidth=0.0, label="no data")
+    ax0.pcolor(
+        X,
+        Y,
+        np.ma.masked_less(~exists, 1),
+        hatch="//",
+        edgecolor="C7",
+        facecolor="none",
+        linewidth=0.0,
+        label="no data",
+    )
     ax0.pcolor(X, Y, toolow, cmap=cmap_into_color("blue", 0.8))
-    ax0.plot([], [], "s", c=get_color("blue", 0.8), label=f"too low [<{min_output:.2f}]")
+    ax0.plot(
+        [], [], "s", c=get_color("blue", 0.8), label=f"too low [<{min_output:.2f}]"
+    )
     ax0.pcolor(X, Y, toohigh, cmap=cmap_into_color("red", 0.8))
-    ax0.plot([], [], "s", c=get_color("red", 0.8), label=f"too high [>{max_output:.2f}]")
+    ax0.plot(
+        [], [], "s", c=get_color("red", 0.8), label=f"too high [>{max_output:.2f}]"
+    )
     ax0.pcolor(
         X,
         Y,
@@ -113,7 +128,15 @@ def main(
 
     # Values wafermap
     ax1.pcolormesh(X, Y, data_grid, vmin=min_output, vmax=max_output)
-    ax1.pcolor(X, Y, np.ma.masked_less(~exists, 1), hatch="//", edgecolor="C7", facecolor="none", linewidth=0.0)
+    ax1.pcolor(
+        X,
+        Y,
+        np.ma.masked_less(~exists, 1),
+        hatch="//",
+        edgecolor="C7",
+        facecolor="none",
+        linewidth=0.0,
+    )
     ax1.pcolor(X, Y, fails, cmap=cmap_into_color("red", 0.2))
 
     # Add value labels to both plots
@@ -158,7 +181,9 @@ def cmap_into_color(
 ) -> mcolors.LinearSegmentedColormap:
     """Create a colormap going from transparent into the color."""
     r, g, b, a = get_color(color, alpha)
-    name = md5(np.array([r * 255, g * 255, b * 255, a * 255], dtype=np.uint8).tobytes()).hexdigest()[:8]
+    name = md5(
+        np.array([r * 255, g * 255, b * 255, a * 255], dtype=np.uint8).tobytes()
+    ).hexdigest()[:8]
     return mcolors.LinearSegmentedColormap.from_list(name, [(0, 0, 0, 0), (r, g, b, a)])
 
 
