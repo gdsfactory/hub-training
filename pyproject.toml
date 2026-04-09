@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = "~=3.12.0"
 dependencies = [
     "gdsfactory>=9.34.0",
-    "gfhub>=0.4.1",
+    "gfhub>=0.4.3",
     "jupyter>=1.1.1",
     "matplotlib>=3.10.8",
     "numpy>=2.3.5",
