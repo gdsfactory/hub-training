@@ -1,0 +1,9 @@
+*.png
+*.json
+*.lyp
+*.csv
+*.gds
+*.parquet
+__pycache__/
+sample_die/
+sample_wafer_map/

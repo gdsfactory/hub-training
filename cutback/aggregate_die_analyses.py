@@ -3,7 +3,6 @@
 # dependencies = [
 #     "numpy",
 #     "matplotlib",
-#     "gfhub",
 # ]
 # ///
 """Aggregate die analyses into a wafer map."""
@@ -60,7 +59,9 @@ def main(
     die_y_min, die_y_max = min(die_ys), max(die_ys) + 1
     nx = die_x_max - die_x_min
     ny = die_y_max - die_y_min
-    X, Y = np.mgrid[die_x_min:die_x_max, die_y_min:die_y_max]
+    x_edges = np.arange(nx + 1) + die_x_min - 0.5
+    y_edges = np.arange(ny + 1) + die_y_min - 0.5
+    X, Y = np.meshgrid(x_edges, y_edges, indexing="ij")
 
     data_grid = np.full((nx, ny), fill_value=np.nan)
     fails = np.full((nx, ny), fill_value=False)
